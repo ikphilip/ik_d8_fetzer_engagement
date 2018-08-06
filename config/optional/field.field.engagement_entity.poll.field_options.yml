@@ -1,0 +1,18 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.engagement_entity.field_options
+    - ik_d8_fetzer_engagement.engagement_entity_type.poll
+id: engagement_entity.poll.field_options
+field_name: field_options
+entity_type: engagement_entity
+bundle: poll
+label: Options
+description: 'Add the poll options into this list.'
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

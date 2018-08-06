@@ -1,0 +1,58 @@
+<?php
+
+/**
+ * @file
+ * Contains ik_d8_fetzer_engagement.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function ik_d8_fetzer_engagement_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the ik_d8_fetzer_engagement module.
+    case 'help.page.ik_d8_fetzer_engagement':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Fetzer engagement forms including polls.') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function ik_d8_fetzer_engagement_theme() {
+  $theme = [];
+  $theme['engagement_entity'] = [
+    'render element' => 'elements',
+    'file' => 'engagement_entity.page.inc',
+    'template' => 'engagement_entity',
+  ];
+  $theme['engagement_entity_content_add_list'] = [
+    'render element' => 'content',
+    'variables' => ['content' => NULL],
+    'file' => 'engagement_entity.page.inc',
+  ];
+  return $theme;
+}
+
+/**
+* Implements hook_theme_suggestions_HOOK().
+*/
+function ik_d8_fetzer_engagement_theme_suggestions_engagement_entity(array $variables) {
+  $suggestions = [];
+  $entity = $variables['elements']['#engagement_entity'];
+  $sanitized_view_mode = strtr($variables['elements']['#view_mode'], '.', '_');
+
+  $suggestions[] = 'engagement_entity__' . $sanitized_view_mode;
+  $suggestions[] = 'engagement_entity__' . $entity->bundle();
+  $suggestions[] = 'engagement_entity__' . $entity->bundle() . '__' . $sanitized_view_mode;
+  $suggestions[] = 'engagement_entity__' . $entity->id();
+  $suggestions[] = 'engagement_entity__' . $entity->id() . '__' . $sanitized_view_mode;
+  return $suggestions;
+}

@@ -1,0 +1,55 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.engagement_entity.poll.field_highlight
+    - field.field.engagement_entity.poll.field_options
+    - field.field.engagement_entity.poll.field_other
+    - field.field.engagement_entity.poll.field_question
+    - ik_d8_fetzer_engagement.engagement_entity_type.poll
+id: engagement_entity.poll.default
+targetEntityType: engagement_entity
+bundle: poll
+mode: default
+content:
+  field_highlight:
+    weight: 4
+    settings:
+      display_label: true
+    third_party_settings: {  }
+    type: boolean_checkbox
+    region: content
+  field_options:
+    weight: 2
+    settings:
+      size: 140
+      placeholder: 'Add a poll option here.'
+    third_party_settings: {  }
+    type: string_textfield
+    region: content
+  field_other:
+    weight: 3
+    settings:
+      display_label: true
+    third_party_settings: {  }
+    type: boolean_checkbox
+    region: content
+  field_question:
+    weight: 1
+    settings:
+      size: 140
+      placeholder: 'The poll question prompted to users.'
+    third_party_settings: {  }
+    type: string_textfield
+    region: content
+  name:
+    type: string_textfield
+    weight: 0
+    region: content
+    settings:
+      size: 60
+      placeholder: 'Title of your poll.'
+    third_party_settings: {  }
+hidden:
+  moderation_state: true
+  user_id: true

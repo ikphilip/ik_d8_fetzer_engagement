@@ -1,0 +1,22 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.engagement_entity.field_other
+    - ik_d8_fetzer_engagement.engagement_entity_type.poll
+id: engagement_entity.poll.field_other
+field_name: field_other
+entity_type: engagement_entity
+bundle: poll
+label: Other
+description: 'Include an "Other" option which will allow the user to type their own response.'
+required: false
+translatable: false
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

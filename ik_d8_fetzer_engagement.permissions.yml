@@ -1,0 +1,30 @@
+add engagement forms entities:
+  title: 'Create new Engagement Forms entities'
+
+administer engagement forms entities:
+  title: 'Administer Engagement Forms entities'
+  description: 'Allow to access the administration form to configure Engagement Forms entities.'
+  restrict access: true
+
+delete engagement forms entities:
+  title: 'Delete Engagement Forms entities'
+
+edit engagement forms entities:
+  title: 'Edit Engagement Forms entities'
+
+view published engagement forms entities:
+  title: 'View published Engagement Forms entities'
+
+view unpublished engagement forms entities:
+  title: 'View unpublished Engagement Forms entities'
+
+view all engagement forms revisions:
+  title: 'View all Engagement Forms revisions'
+
+revert all engagement forms revisions:
+  title: 'Revert all Engagement Forms revisions'
+  description: 'Role requires permission <em>view Engagement Forms revisions</em> and <em>edit rights</em> for engagement forms entities in question or <em>administer engagement forms entities</em>.'
+
+delete all engagement forms revisions:
+  title: 'Delete all revisions'
+  description: 'Role requires permission to <em>view Engagement Forms revisions</em> and <em>delete rights</em> for engagement forms entities in question or <em>administer engagement forms entities</em>.'

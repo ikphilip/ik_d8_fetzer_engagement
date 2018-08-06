@@ -1,0 +1,16 @@
+{
+  "name": "interactiveknowledge/ik_d8_fetzer_engagement",
+  "description": "Fetzer engagement forms including polls.",
+  "version": "0.1",
+  "type": "drupal-custom-module",
+  "keywords": ["Drupal", "Fetzer"],
+  "homepage": "http://interactiveknowledge.com",
+  "support": {
+    "source": "https://github.com/ikphilip/ik_d8_fetzer_engagement"
+  },
+  "require-dev": {
+    "drupal/coder": "^8.2.12",
+    "squizlabs/php_codesniffer": "^2.9",
+    "dealerdirect/phpcodesniffer-composer-installer": "^0.4.4"
+  }
+}

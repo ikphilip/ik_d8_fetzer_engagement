@@ -1,0 +1,30 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.engagement_entity.words.field_question
+    - ik_d8_fetzer_engagement.engagement_entity_type.words
+id: engagement_entity.words.default
+targetEntityType: engagement_entity
+bundle: words
+mode: default
+content:
+  field_question:
+    weight: 1
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textfield
+    region: content
+  name:
+    type: string_textfield
+    weight: 0
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+hidden:
+  moderation_state: true
+  user_id: true

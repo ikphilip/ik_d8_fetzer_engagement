@@ -1,0 +1,18 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.engagement_entity.field_question
+    - ik_d8_fetzer_engagement.engagement_entity_type.poll
+id: engagement_entity.poll.field_question
+field_name: field_question
+entity_type: engagement_entity
+bundle: poll
+label: Question
+description: 'Give this poll and name but the Question text that is displayed must be written here.'
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string
