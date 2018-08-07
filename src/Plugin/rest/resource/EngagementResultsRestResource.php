@@ -34,6 +34,20 @@ class EngagementResultsRestResource extends ResourceBase {
   protected $currentUser;
 
   /**
+   * The bundles used by Engagement Entity
+   * 
+   * array
+   */
+  protected $engagementBundles;
+
+  /**
+   * The results table.
+   * 
+   * string
+   */
+  protected $table = 'fetzer_engagement_responses';
+
+  /**
    * Constructs a new EngagementResultsRestResource object.
    *
    * @param array $configuration
@@ -59,6 +73,8 @@ class EngagementResultsRestResource extends ResourceBase {
     parent::__construct($configuration, $plugin_id, $plugin_definition, $serializer_formats, $logger);
 
     $this->currentUser = $current_user;
+
+    $this->engagementBundles = $bundle_info = \Drupal::entityManager()->getBundleInfo('engagement_entity');
   }
 
   /**
@@ -87,67 +103,27 @@ class EngagementResultsRestResource extends ResourceBase {
    * @throws \Symfony\Component\HttpKernel\Exception\HttpException
    *   Throws exception expected.
    */
-  public function get(string $webformId) {
-    $entity = [
-      'status' => 200,
-      'message' => 'OK',
-      'content' => $webformId
-    ];
-
+  public function get(string $formId) {
     // You must to implement the logic of your REST Resource here.
     // Use current user after pass authentication to validate access.
     if (!$this->currentUser->hasPermission('access content')) {
       throw new AccessDeniedHttpException();
     }
 
-    return new ResourceResponse($entity, 200);
+    $response = [];
+
+    $entity = EngagementEntity::load($formId);
+    if (is_null($entity->id->value)) {
+      return new ModifiedResourceResponse(['error' => 'Engagement entity form not found.'], 200);
+    }
+
+    // Return custom data object appropriate for the Engagement entity requested.
+    $response = $this->retrieveFormResponseData($entity);
+
+    return new ModifiedResourceResponse($response, 200);
   }
 
     /**
-   * Responds to POST requests.
-   *
-   * @param array $data
-   *   The POST request data.
-   *
-   * @return \Drupal\rest\ModifiedResourceResponse
-   *   The HTTP response object.
-   *
-   * @throws \Symfony\Component\HttpKernel\Exception\HttpException
-   *   Throws exception expected.
-   */
-  public function post(array $data) {
-    // You must to implement the logic of your REST Resource here.
-    // Use current user after pass authentication to validate access.
-    if (!$this->currentUser->hasPermission('access content')) {
-      throw new AccessDeniedHttpException();
-    }
-
-    if (empty($data)) {
-      throw new BadRequestHttpException('No POST data.');
-    }
-
-    // Engagement Entity ID required in order to POST data.
-    if (!isset($data['fid'])) {
-      throw new BadRequestHttpException('Bad request. Data missing.');
-    }
-
-    // Load the entity referenced by the POST.
-    $entity = EngagementEntity::load($data['fid']);
-
-    if (is_null($entity)) {
-      throw new BadRequestHttpException('Bad request. Data missing.');
-    }
-
-    $write = $this->writeResponse($data, $entity);
-
-    if ($write['error']) {
-      throw new BadRequestHttpException('Bad request. Data missing.');
-    }
-
-    return new ModifiedResourceResponse($write, 200);
-  }
-
-  /**
    * Write the response to the database table.
    * 
    * @param array $data
@@ -157,7 +133,7 @@ class EngagementResultsRestResource extends ResourceBase {
    * 
    * @return array
    */
-  public function writeResponse (array $data, EngagementEntity $entity) {
+  public function insertFormResponseData (array $data, EngagementEntity $entity) {
     $fields = [
       'fid' => (int) $entity->id(),
       'uid' => (int) $this->currentUser->id(),
@@ -206,7 +182,7 @@ class EngagementResultsRestResource extends ResourceBase {
     $database = \Drupal::database();
     $transaction = $database->startTransaction();
     try {
-      $result = $database->insert('fetzer_engagement_responses')
+      $result = $database->insert($this->table)
         ->fields($fields)
         ->execute();
 
@@ -219,6 +195,133 @@ class EngagementResultsRestResource extends ResourceBase {
 
       return ['error' => 1];
     }
+  }
+
+    /**
+   * Responds to POST requests.
+   *
+   * @param array $data
+   *   The POST request data.
+   *
+   * @return \Drupal\rest\ModifiedResourceResponse
+   *   The HTTP response object.
+   *
+   * @throws \Symfony\Component\HttpKernel\Exception\HttpException
+   *   Throws exception expected.
+   */
+  public function post(array $data) {
+    // You must to implement the logic of your REST Resource here.
+    // Use current user after pass authentication to validate access.
+    if (!$this->currentUser->hasPermission('access content')) {
+      throw new AccessDeniedHttpException();
+    }
+
+    if (empty($data)) {
+      throw new BadRequestHttpException('No POST data.');
+    }
+
+    // Engagement Entity ID required in order to POST data.
+    if (!isset($data['fid'])) {
+      throw new BadRequestHttpException('Bad request. Data missing.');
+    }
+
+    // Load the entity referenced by the POST.
+    $entity = EngagementEntity::load($data['fid']);
+
+    if (is_null($entity)) {
+      throw new BadRequestHttpException('Bad request. Data missing.');
+    }
+
+    $response = $this->insertFormResponseData($data, $entity);
+
+    if ($response['error']) {
+      throw new BadRequestHttpException('Bad request. Data missing.');
+    }
+
+    return new ModifiedResourceResponse($response, 200);
+  }
+
+  /**
+   * Retrieve the data in custom format for our Engagement entity types
+   * 
+   * @param Drupal\ik_d8_fetzer_engagement\Entity\EngagementEntity entity
+   *   EngagementEntity object.
+   * 
+   * @return array
+   */
+  public function retrieveFormResponseData (EngagementEntity $entity) {
+    $response = [];
+    $data = $this->getEngagementResultsData($entity->id->value);
+
+    if ($entity->bundle() === 'poll') {
+      $response = [
+        'data' => [
+          'total' => count($data)
+        ]
+      ];
+
+      // Get options from entity
+      $options = [];
+      foreach($entity->field_options as $key => $option) {
+        $options[$key] = $option->value;
+        $response['data']['options'] = $options;
+      }
+
+      // Count results
+      $results = [];
+      foreach ($data as $fid => $record) {
+        $choices = unserialize($record->poll_choices);
+        foreach($choices as $cid => $choice) {
+          if (isset($results[$cid])) {
+            if ($choice > 0) {
+              $results[$cid]++;
+            }
+          } else {
+            if ($choice > 0) {
+              $results[$cid] = 1;
+            } else {
+              $results[$cid] = 0;
+            }
+          }
+        }
+      }
+
+      // Calculate the percentages.
+      foreach ($results as $rid => $result) {
+        $results[$rid] = (float) $result / count($data);
+      }
+
+      $response['data']['results'] = $results;
+
+    } else if ($entity->bundle() === 'words') {
+      // Build an array which counts the frequency of words submitted for this Engagement form.
+      foreach ($data as $fid => $record) {
+        $word = strtolower($record->word);
+        if (isset($response['data'][$word])) {
+          $response['data'][$word]++;
+        } else {
+          $response['data'][$word] = 1;
+        }
+      }
+    }
+
+    return $response;
+  }
+
+  /**
+   * Get the results from the Fetzer Engagement records table.
+   * 
+   * @param string $entityId
+   * 
+   * @return array
+   */
+  private function getEngagementResultsData (string $entityId) {
+    $database = \Drupal::database();
+    return $database->select($this->table, 't')
+      ->condition('t.fid', $entityId)
+      ->fields('t')
+      ->execute()
+      ->fetchAllAssoc('rid');
   }
 
 }

@@ -1,0 +1,20 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - ik_d8_fetzer_engagement
+    - schemata
+    - serialization
+    - simple_oauth
+id: engagement_results_rest_resource
+plugin_id: engagement_results_rest_resource
+granularity: resource
+configuration:
+  methods:
+    - GET
+    - POST
+  formats:
+    - schema_json
+    - json
+  authentication:
+    - oauth2
