@@ -18,8 +18,10 @@ class EngagementEntityListBuilder extends EntityListBuilder {
    * {@inheritdoc}
    */
   public function buildHeader() {
-    $header['id'] = $this->t('Engagement Forms ID');
     $header['name'] = $this->t('Name');
+    $header['id'] = $this->t('ID');
+    $header['type'] = $this->t('Engagement Type');
+    $header['owner'] = $this->t('Owner');
     return $header + parent::buildHeader();
   }
 
@@ -27,13 +29,15 @@ class EngagementEntityListBuilder extends EntityListBuilder {
    * {@inheritdoc}
    */
   public function buildRow(EntityInterface $entity) {
-    /* @var $entity \Drupal\ik_d8_fetzer_engagement\Entity\EngagementEntity */
-    $row['id'] = $entity->id();
+    /* @var $entity \Drupal\ik_d_fetzer_engagement\Entity\EngagementEntity */
     $row['name'] = Link::createFromRoute(
       $entity->label(),
       'entity.engagement_entity.edit_form',
       ['engagement_entity' => $entity->id()]
     );
+    $row['id'] = $entity->id();
+    $row['type'] = $entity->bundle();
+    $row['owner'] = $entity->getRevisionUser()->getDisplayName();
     return $row + parent::buildRow($entity);
   }
 

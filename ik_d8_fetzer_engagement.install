@@ -63,7 +63,7 @@ function ik_d8_fetzer_engagement_schema () {
         'type' => 'varchar',
         'length' => 255,
         'not null' => FALSE,
-        'description' => 'Word response from the word engagement form',
+        'description' => 'Word response from the word engagement form. Also use this field for "Other" in poll engagement form.',
       ],
       'poll_choices' => [
         'type' => 'text',
