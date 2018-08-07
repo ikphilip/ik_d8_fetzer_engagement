@@ -1,12 +1,3 @@
-
-# Engagement Forms menu items definition
-entity.engagement_entity.collection:
-  title: 'Engagement Forms'
-  route_name: entity.engagement_entity.collection
-  description: 'Create and manage Engagement Forms'
-  parent: system.admin_structure
-
-
 # Engagement Forms type menu items definition
 entity.engagement_entity_type.collection:
   title: 'Engagement Forms (Manage)'
