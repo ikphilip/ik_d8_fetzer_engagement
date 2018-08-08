@@ -11,7 +11,7 @@ entity_type: engagement_response
 bundle: engagement_response
 label: Permission
 description: 'Does the respondent give you permission to share their information in combination with their response.'
-required: true
+required: false
 translatable: false
 default_value:
   -
