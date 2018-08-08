@@ -25,4 +25,25 @@ entity.engagement_entity.collection_view:
   route_name:  entity.entity_engagement.collection_view
   base_route:  system.admin_content
   title: 'Engagement Forms'
-  weight: -1
+  weight: -1# Engagement response routing definition
+engagement_response.settings_tab:
+  route_name: engagement_response.settings
+  title: 'Settings'
+  base_route: engagement_response.settings
+
+entity.engagement_response.canonical:
+  route_name: entity.engagement_response.canonical
+  base_route: entity.engagement_response.canonical
+  title: 'View'
+
+entity.engagement_response.edit_form:
+  route_name: entity.engagement_response.edit_form
+  base_route: entity.engagement_response.canonical
+  title: 'Edit'
+
+entity.engagement_response.delete_form:
+  route_name:  entity.engagement_response.delete_form
+  base_route:  entity.engagement_response.canonical
+  title: Delete
+  weight: 10
+

@@ -1,0 +1,84 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.engagement_response.engagement_response.field_email
+    - field.field.engagement_response.engagement_response.field_engagement_form
+    - field.field.engagement_response.engagement_response.field_feedback
+    - field.field.engagement_response.engagement_response.field_name
+    - field.field.engagement_response.engagement_response.field_permission
+    - field.field.engagement_response.engagement_response.field_poll_choices
+    - field.field.engagement_response.engagement_response.field_word
+  module:
+    - ik_d8_fetzer_engagement
+id: engagement_response.engagement_response.default
+targetEntityType: engagement_response
+bundle: engagement_response
+mode: default
+content:
+  field_email:
+    weight: 4
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+    region: content
+  field_engagement_form:
+    weight: 1
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+    type: entity_reference_label
+    region: content
+  field_feedback:
+    weight: 5
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: basic_string
+    region: content
+  field_name:
+    weight: 2
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+    region: content
+  field_permission:
+    weight: 3
+    label: above
+    settings:
+      format: default
+      format_custom_false: ''
+      format_custom_true: ''
+    third_party_settings: {  }
+    type: boolean
+    region: content
+  field_poll_choices:
+    weight: 7
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: basic_string
+    region: content
+  field_word:
+    weight: 6
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+    region: content
+  name:
+    label: above
+    type: string
+    weight: 0
+    region: content
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+hidden:
+  user_id: true

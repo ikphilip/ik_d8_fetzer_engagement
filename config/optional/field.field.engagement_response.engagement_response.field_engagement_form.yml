@@ -1,0 +1,32 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.engagement_response.field_engagement_form
+    - ik_d8_fetzer_engagement.engagement_entity_type.feedback
+    - ik_d8_fetzer_engagement.engagement_entity_type.poll
+    - ik_d8_fetzer_engagement.engagement_entity_type.words
+  module:
+    - ik_d8_fetzer_engagement
+id: engagement_response.engagement_response.field_engagement_form
+field_name: field_engagement_form
+entity_type: engagement_response
+bundle: engagement_response
+label: 'Engagement Form'
+description: 'The form related to this form submission.'
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:engagement_entity'
+  handler_settings:
+    target_bundles:
+      feedback: feedback
+      poll: poll
+      words: words
+    sort:
+      field: _none
+    auto_create: false
+    auto_create_bundle: feedback
+field_type: entity_reference

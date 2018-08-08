@@ -1,0 +1,23 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.engagement_response.field_permission
+  module:
+    - ik_d8_fetzer_engagement
+id: engagement_response.engagement_response.field_permission
+field_name: field_permission
+entity_type: engagement_response
+bundle: engagement_response
+label: Permission
+description: 'Does the respondent give you permission to share their information in combination with their response.'
+required: true
+translatable: false
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  on_label: 'Yes'
+  off_label: 'No'
+field_type: boolean

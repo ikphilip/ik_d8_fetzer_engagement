@@ -28,3 +28,22 @@ revert all engagement forms revisions:
 delete all engagement forms revisions:
   title: 'Delete all revisions'
   description: 'Role requires permission to <em>view Engagement Forms revisions</em> and <em>delete rights</em> for engagement forms entities in question or <em>administer engagement forms entities</em>.'
+add engagement response entities:
+  title: 'Create new Engagement response entities'
+
+administer engagement response entities:
+  title: 'Administer Engagement response entities'
+  description: 'Allow to access the administration form to configure Engagement response entities.'
+  restrict access: true
+
+delete engagement response entities:
+  title: 'Delete Engagement response entities'
+
+edit engagement response entities:
+  title: 'Edit Engagement response entities'
+
+view published engagement response entities:
+  title: 'View published Engagement response entities'
+
+view unpublished engagement response entities:
+  title: 'View unpublished Engagement response entities'

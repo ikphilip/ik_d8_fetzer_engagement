@@ -11,3 +11,8 @@ entity.engagement_entity_type.add_form:
   appears_on:
     - entity.engagement_entity_type.collection
 
+entity.engagement_response.add_form:
+  route_name: entity.engagement_response.add_form
+  title: 'Add Engagement response'
+  appears_on:
+    - entity.engagement_response.collection

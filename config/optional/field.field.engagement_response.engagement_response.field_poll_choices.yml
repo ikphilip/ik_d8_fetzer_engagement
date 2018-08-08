@@ -1,0 +1,19 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.engagement_response.field_poll_choices
+  module:
+    - ik_d8_fetzer_engagement
+id: engagement_response.engagement_response.field_poll_choices
+field_name: field_poll_choices
+entity_type: engagement_response
+bundle: engagement_response
+label: 'Poll Choices'
+description: 'Serialized (raw) data from poll choices responses. Must be manipulated in PHP to display the user choices in human-friendly format.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string_long
