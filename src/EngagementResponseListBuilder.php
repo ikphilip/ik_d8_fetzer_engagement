@@ -5,6 +5,7 @@ namespace Drupal\ik_d8_fetzer_engagement;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityListBuilder;
 use Drupal\Core\Link;
+use Drupal\ik_d8_fetzer_engagement\Entity\EngagementEntity;
 
 /**
  * Defines a class to build a listing of Engagement response entities.
@@ -19,7 +20,7 @@ class EngagementResponseListBuilder extends EntityListBuilder {
    */
   public function buildHeader() {
     $header['id'] = $this->t('Engagement response ID');
-    $header['name'] = $this->t('Name');
+    $header['form'] = $this->t('Form');
     return $header + parent::buildHeader();
   }
 
@@ -29,11 +30,7 @@ class EngagementResponseListBuilder extends EntityListBuilder {
   public function buildRow(EntityInterface $entity) {
     /* @var $entity \Drupal\ik_d8_fetzer_engagement\Entity\EngagementResponse */
     $row['id'] = $entity->id();
-    $row['name'] = Link::createFromRoute(
-      $entity->label(),
-      'entity.engagement_response.edit_form',
-      ['engagement_response' => $entity->id()]
-    );
+    $row['form'] = EngagementEntity::load($entity->field_engagement_form->target_id)->label();
     return $row + parent::buildRow($entity);
   }
 

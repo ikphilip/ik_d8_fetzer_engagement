@@ -7,6 +7,7 @@ use Drupal\rest\ModifiedResourceResponse;
 use Drupal\rest\Plugin\ResourceBase;
 use Drupal\rest\ResourceResponse;
 use Drupal\ik_d8_fetzer_engagement\Entity\EngagementEntity;
+use Drupal\ik_d8_fetzer_engagement\Entity\EngagementResponse;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -41,11 +42,11 @@ class EngagementResultsRestResource extends ResourceBase {
   protected $engagementBundles;
 
   /**
-   * The results table.
+   * The entity where the results are saved.
    * 
    * string
    */
-  protected $table = 'fetzer_engagement_responses';
+  protected $resultsEntity = 'engagement_response';
 
   /**
    * Constructs a new EngagementResultsRestResource object.
@@ -135,37 +136,37 @@ class EngagementResultsRestResource extends ResourceBase {
    */
   public function insertFormResponseData (array $data, EngagementEntity $entity) {
     $fields = [
-      'fid' => (int) $entity->id(),
+      'field_engagement_form' => (int) $entity->id(),
       'uid' => (int) $this->currentUser->id(),
-      'time' => REQUEST_TIME,
     ];
 
     // Prepare data for INSERT.
     switch ($entity->bundle()) {
       case 'feedback':
-        $fields['feedback'] = $data['thoughts'] ?? NULL;
-        $fields['name'] = $data['name'] ?? NULL;
-        $fields['email'] = $data['email'] ?? NULL;
-        $fields['permission'] = (int) $data['permission'] ?? 0;
+        $fields['field_feedback'] = $data['thoughts'] ?? NULL;
+        $fields['field_name'] = $data['name'] ?? NULL;
+        $fields['field_email'] = $data['email'] ?? NULL;
+        $fields['field_permission'] = (boolean) $data['permission'] ?? FALSE;
 
-        if (is_null($fields['feedback'])) {
+         // Required for this engagement type
+        if (is_null($fields['field_feedback'])) {
           $fields['error'] = 1;
         }
         break;
       case 'poll':
-        $fields['poll_choices'] = $data['options'] ? serialize($data['options']) : NULL;
-        $fields['word'] = $data['other'] ?? NULL;
+        $fields['field_poll_choices'] = $data['options'] ? serialize($data['options']) : NULL;
+        $fields['field_word'] = $data['other'] ?? NULL;
 
-        if (is_null($fields['poll_choices'])) {
+        if (is_null($fields['field_poll_choices'])) {
           $fields['error'] = 1;
         }
         break;
       case 'words':
-        $fields['word'] = $data['word'] ?? NULL;
-        $fields['name'] = $data['name'] ?? NULL;
-        $fields['email'] = $data['email'] ?? NULL;
+        $fields['field_word'] = trim($data['word']) ?? NULL;
+        $fields['field_name'] = $data['name'] ?? NULL;
+        $fields['field_email'] = $data['email'] ?? NULL;
 
-        if (is_null($fields['word']) || empty($fields['word'])) {
+        if (is_null($fields['field_word']) || empty($fields['field_word'])) {
           $fields['error'] = 1;
         }
         break;
@@ -178,23 +179,15 @@ class EngagementResultsRestResource extends ResourceBase {
       return $fields;
     }
 
-    // INSERT Data
-    $database = \Drupal::database();
-    $transaction = $database->startTransaction();
-    try {
-      $result = $database->insert($this->table)
-        ->fields($fields)
-        ->execute();
+    // Create response entity
+    $result = EngagementResponse::create($fields)
+      ->save();
 
+    if ($result) {
       return ['rid' => (int) $result];
     }
-    catch (Exception $e) {
-      $transaction->rollBack();
 
-      \Drupal::logger('IK Fetzer')->error($e->getMessage());
-
-      return ['error' => 1];
-    }
+    return ['error' => 1];
   }
 
     /**
@@ -251,15 +244,18 @@ class EngagementResultsRestResource extends ResourceBase {
    */
   public function retrieveFormResponseData (EngagementEntity $entity) {
     $response = [];
-    $data = $this->getEngagementResultsData($entity->id->value);
+    $data = $this->getEngagementResponses($entity->id->value);
 
     if ($entity->bundle() === 'poll') {
+      $total = count($data);
+
       $response = [
         'data' => [
-          'total' => count($data)
-        ]
+          'total' => $total,
+        ],
       ];
 
+      // @TODO Add support for "or Other" and custom response.
       // Get options from entity
       $options = [];
       foreach($entity->field_options as $key => $option) {
@@ -269,8 +265,8 @@ class EngagementResultsRestResource extends ResourceBase {
 
       // Count results
       $results = [];
-      foreach ($data as $fid => $record) {
-        $choices = unserialize($record->poll_choices);
+      foreach ($data as $nid => $record) {
+        $choices = unserialize($record->field_poll_choices->value);
         foreach($choices as $cid => $choice) {
           if (isset($results[$cid])) {
             if ($choice > 0) {
@@ -288,7 +284,7 @@ class EngagementResultsRestResource extends ResourceBase {
 
       // Calculate the percentages.
       foreach ($results as $rid => $result) {
-        $results[$rid] = (float) $result / count($data);
+        $results[$rid] = (float) $result / $total;
       }
 
       $response['data']['results'] = $results;
@@ -296,7 +292,7 @@ class EngagementResultsRestResource extends ResourceBase {
     } else if ($entity->bundle() === 'words') {
       // Build an array which counts the frequency of words submitted for this Engagement form.
       foreach ($data as $fid => $record) {
-        $word = strtolower($record->word);
+        $word = strtolower($record->field_word->value);
         if (isset($response['data'][$word])) {
           $response['data'][$word]++;
         } else {
@@ -309,19 +305,18 @@ class EngagementResultsRestResource extends ResourceBase {
   }
 
   /**
-   * Get the results from the Fetzer Engagement records table.
+   * Get the results from the Engagement Response entities.
    * 
    * @param string $entityId
    * 
    * @return array
    */
-  private function getEngagementResultsData (string $entityId) {
-    $database = \Drupal::database();
-    return $database->select($this->table, 't')
-      ->condition('t.fid', $entityId)
-      ->fields('t')
-      ->execute()
-      ->fetchAllAssoc('rid');
+  private function getEngagementResponses (string $entityId) {
+      $responses = \Drupal::entityQuery($this->resultsEntity)
+      ->condition('field_engagement_form', $entityId, '=')
+      ->execute();
+
+      return EngagementResponse::loadMultiple(array_keys($responses));
   }
 
 }
