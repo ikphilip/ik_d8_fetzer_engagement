@@ -3,6 +3,8 @@ entity.engagement_entity.add_form:
   title: 'Add Engagement Forms'
   appears_on:
     - entity.engagement_entity.collection
+    - entity.entity_engagement.collection_view
+
 entity.engagement_entity_type.add_form:
   route_name: entity.engagement_entity_type.add_form
   title: 'Add Engagement Forms type'
