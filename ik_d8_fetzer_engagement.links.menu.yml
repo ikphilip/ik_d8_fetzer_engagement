@@ -8,10 +8,9 @@ entity.engagement_entity_type.collection:
 # Engagement response menu items definition
 entity.engagement_response.collection:
   title: 'Engagement response list'
-  route_name: entity.engagement_response.collection
   description: 'List Engagement response entities'
+  route_name: entity.engagement_response.collection
   parent: system.admin_structure
-  weight: 100
 
 engagement_response.admin.structure.settings:
   title: 'Engagement response settings'

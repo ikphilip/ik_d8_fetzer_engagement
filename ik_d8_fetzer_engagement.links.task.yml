@@ -25,7 +25,10 @@ entity.engagement_entity.collection_view:
   route_name:  entity.entity_engagement.collection_view
   base_route:  system.admin_content
   title: 'Engagement Forms'
-  weight: -1# Engagement response routing definition
+  weight: -1
+
+# Engagement response routing definition
+
 engagement_response.settings_tab:
   route_name: engagement_response.settings
   title: 'Settings'
