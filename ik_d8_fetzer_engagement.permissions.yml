@@ -47,3 +47,6 @@ view published engagement response entities:
 
 view unpublished engagement response entities:
   title: 'View unpublished Engagement response entities'
+
+permission_callbacks:
+  - \Drupal\ik_d8_fetzer_engagement\EngagementEntityPermissions::entityTypePermissions

@@ -1,0 +1,13 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - user.role.engagement_admin
+  module:
+    - user
+id: user_remove_role_action.engagement_admin
+label: 'Remove the Engagement Admin role from the selected user(s)'
+type: user
+plugin: user_remove_role_action
+configuration:
+  rid: engagement_admin

@@ -1,0 +1,27 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - lightning_core
+third_party_settings:
+  lightning_core:
+    description: 'Has access to all the engagement forms (entities) and their responses.'
+id: engagement_admin
+label: 'Engagement Admin'
+weight: 1
+is_admin: null
+permissions:
+  - 'add engagement forms entities'
+  - 'administer engagement forms entities'
+  - 'administer engagement response entities'
+  - 'delete all engagement forms revisions'
+  - 'delete engagement forms entities'
+  - 'delete engagement response entities'
+  - 'edit engagement forms entities'
+  - 'edit engagement response entities'
+  - 'revert all engagement forms revisions'
+  - 'view all engagement forms revisions'
+  - 'view published engagement forms entities'
+  - 'view published engagement response entities'
+  - 'view unpublished engagement forms entities'
+  - 'view unpublished engagement response entities'
