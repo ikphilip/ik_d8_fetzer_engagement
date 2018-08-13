@@ -5,13 +5,6 @@ entity.engagement_entity_type.collection:
   description: 'Create and manage Engagement Forms types'
   parent: system.admin_structure
 
-# Engagement response menu items definition
-entity.engagement_response.collection:
-  title: 'Engagement response list'
-  description: 'List Engagement response entities'
-  route_name: entity.engagement_response.collection
-  parent: system.admin_structure
-
 engagement_response.admin.structure.settings:
   title: 'Engagement response settings'
   description: 'Configure Engagement response entities'
